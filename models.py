@@ -1,15 +1,14 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Float, String, Boolean, Integer
 from database import Base
 
 
-class Tasks(Base):
-    __tablename__ = "tasks"
+class Profiles(Base):
+    __tablename__ = "profile"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String)
-    author = Column(String)
-    description = Column(String)
-    priority = Column(Integer)
-    complete = Column(Boolean, default=False)
-    date = Column(DateTime, default=datetime.utcnow)
+    name = Column(String)
+    gpa = Column(Float)
+    school = Column(String)
+    gender = Column(String)
+    have_pet = Column(Boolean)
