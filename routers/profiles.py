@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 
 from models import Profiles
 from database import get_db
+from .auth import get_current_user
 
 router = APIRouter()
 
 
 class Profile(BaseModel):
     id: int | None = None
-    name: str = Field(min_length=3)
     gpa: float = Field(lt=5.0)
     school: str = Field(min_length=3, max_length=250)
     gender: str = Field(min_length=0, max_length=7)
@@ -19,7 +19,6 @@ class Profile(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "name": "James",
                 "gpa": "4.0",
                 "school": "SMIC",
                 "gender": "Male",
@@ -29,29 +28,29 @@ class Profile(BaseModel):
 
 
 @router.get("", status_code=status.HTTP_200_OK)
-async def get_all_profiles(db: Session = Depends(get_db)):
-    return db.query(Profiles).all()
+async def get_all_profiles(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    return db.query(Profiles).filter(Profiles.author == current_user.get("id")).all()
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-async def create_profile(profile: Profile, db: Session = Depends(get_db)):
-    new_profile = Profiles(**profile.model_dump())
+async def create_profile(profile: Profile, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    new_profile = Profiles(**profile.model_dump(), name=current_user.get("id"))
 
     db.add(new_profile)
     db.commit()
 
 
 @router.get("/{profile_id}", status_code=status.HTTP_200_OK)
-async def get_profile_by_id(profile_id: int = Path(gt=0), db: Session = Depends(get_db)):
-    profile = db.query(Profiles).filter(profile_id == Profiles.id).first()
+async def get_profile_by_id(profile_id: int = Path(gt=0), db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    profile = db.query(Profiles).filter(Profiles.id == current_user.get("id")).first()
     if profile is not None:
         return profile
     raise HTTPException(status_code=404, detail=f"Profile with id #{profile_id} was not found")
 
 
 @router.put("/{profile_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update_profile_by_id(profile_data: Profile, profile_id: int = Path(gt=0), db: Session = Depends(get_db)):
-    profile = db.query(Profiles).filter(profile_id == Profiles.id).first()
+async def update_profile_by_id(profile_data: Profile, profile_id: int = Path(gt=0), db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    profile = db.query(Profiles).filter(Profiles.id == current_user.get("id")).first()
 
     if profile is None:
         raise HTTPException(status_code=404, detail=f"Profile with id #{profile_id} was not found")
@@ -67,8 +66,8 @@ async def update_profile_by_id(profile_data: Profile, profile_id: int = Path(gt=
 
 
 @router.delete("/{profile_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_profile_by_id(profile_id: int = Path(gt=0), db: Session = Depends(get_db)):
-    delete_profile = db.query(Profiles).filter(Profiles.id == profile_id).first()
+async def delete_profile_by_id(profile_id: int = Path(gt=0), db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    delete_profile = db.query(Profiles).filter(Profiles.id == current_user.get("id")).first()
 
     if delete_profile is None:
         raise HTTPException(status_code=404, detail=f"Profile with id #{profile_id} was not found")

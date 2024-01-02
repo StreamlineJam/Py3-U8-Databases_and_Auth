@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Float, String, Boolean, Integer, DateTime
+from sqlalchemy import Column, Float, String, Boolean, Integer, DateTime, ForeignKey
 from database import Base
 
 
@@ -7,7 +7,7 @@ class Profiles(Base):
     __tablename__ = "profile"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    name = Column(Integer, ForeignKey("users.id"))
     gpa = Column(Float)
     school = Column(String)
     gender = Column(String)
@@ -19,7 +19,7 @@ class Tasks(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
-    author = Column(String)
+    author = Column(Integer, ForeignKey("users.id"))
     description = Column(String)
     priority = Column(Integer)
     complete = Column(Boolean, default=False)
