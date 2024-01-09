@@ -58,7 +58,6 @@ async def update_task_by_id(task_data: Task, task_id: int = Path(gt=0), db: Sess
         raise HTTPException(status_code=404, detail=f"Task with id #{task_id} was not found")
 
     task.title = task_data.title
-    task.author = task_data.author
     task.description = task_data.description
     task.priority = task_data.priority
     task.complete = task_data.complete

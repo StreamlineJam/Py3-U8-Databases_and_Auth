@@ -35,7 +35,7 @@ class User(BaseModel):
     password: str
     is_active: bool
     role: str
-    created_on: datetime = datetime.utcnow()
+    join_on: datetime = datetime.utcnow()
 
     class Config:
         json_schema_extra = {
@@ -43,7 +43,7 @@ class User(BaseModel):
                 "name": "Jack",
                 "alt_name": "郑天健",
                 "email": "260021@bjsmicschool.com",
-                "password": "963.52",
+                "password": "123456",
                 "is_active": True,
                 "role": ""
             }
@@ -75,9 +75,10 @@ async def get_current_user(token: str = Depends(oauth2_bearer)):
     try:
         payload = jwt.decode(token, JSON_SECRET, algorithms=JSON_ALG)
         user_email: str = payload.get("sub")
-        user_id = payload.get(id)
+        user_id = payload.get("id")
         if user_email is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not verify credentials")
+        return {"id": user_id, "email": user_email}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not verify credentials")
 

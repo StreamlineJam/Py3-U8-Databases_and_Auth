@@ -55,11 +55,10 @@ async def update_profile_by_id(profile_data: Profile, profile_id: int = Path(gt=
     if profile is None:
         raise HTTPException(status_code=404, detail=f"Profile with id #{profile_id} was not found")
 
-    profile.title = profile_data.name
-    profile.author = profile_data.gpa
-    profile.description = profile_data.school
-    profile.priority = profile_data.gender
-    profile.complete = profile_data.have_pet
+    profile.gpa = profile_data.gpa
+    profile.school = profile_data.school
+    profile.gender = profile_data.gender
+    profile.have_pet = profile_data.have_pet
 
     db.add(profile)
     db.commit()

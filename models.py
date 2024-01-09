@@ -37,3 +37,14 @@ class Users(Base):
     role = Column(String)
     is_active = Column(Boolean, default=True)
     join_on = Column(DateTime, default=datetime.now(timezone.utc))
+
+class Fruits(Base):
+    __tablename__ = "fruits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    fruit_type = Column(String)
+    planter = Column(String)
+    color = Column(String)
+    size = Column(Integer)
+    grown = Column(Boolean, default=False)
+    created_on = Column(DateTime, default=datetime.utcnow)
