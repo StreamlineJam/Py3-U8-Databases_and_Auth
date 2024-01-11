@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from models import Fruits
 from database import get_db
+from .auth import get_current_user
 
 router = APIRouter()
 
@@ -36,8 +37,8 @@ async def get_all_fruits(db: Session = Depends(get_db)):
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-async def create_fruit(fruit: Fruit, db: Session = Depends(get_db)):
-    new_fruit = Fruits(**fruit.model_dump())
+async def create_fruit(fruit: Fruit, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    new_fruit = Fruits(**fruit.model_dump(), planter=current_user.get("id"))
     db.add(new_fruit)
     db.commit()
 
