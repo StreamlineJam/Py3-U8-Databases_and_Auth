@@ -13,7 +13,6 @@ router = APIRouter()
 class Fruit(BaseModel):
     id: int | None = None
     fruit_type: str
-    planter: str
     color: str
     size: int
     grown: bool
@@ -23,7 +22,6 @@ class Fruit(BaseModel):
         json_schema_extra = {
             "example": {
                 "fruit_type": "type of the fruit",
-                "planter": "Jonathan Fernandes",
                 "color": "color of the fruit",
                 "size": 1,
                 "grown": False

@@ -43,7 +43,7 @@ class Fruits(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     fruit_type = Column(String)
-    planter = Column(String)
+    planter = Column(Integer, ForeignKey("users.id"))
     color = Column(String)
     size = Column(Integer)
     grown = Column(Boolean, default=False)
