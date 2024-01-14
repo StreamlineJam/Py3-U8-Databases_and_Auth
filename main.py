@@ -18,4 +18,4 @@ app.include_router(auth.router, prefix="", tags=["Auth"])
 app.include_router(fruits.router, prefix="/fruits", tags=["Fruits"])
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="10.6.20.110", reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", reload=True)

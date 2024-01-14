@@ -43,7 +43,7 @@ async def create_fruit(fruit: Fruit, db: Session = Depends(get_db), current_user
 
 @router.get("/{fruit_id}", status_code=status.HTTP_200_OK)
 async def get_fruit_by_id(fruit_id: int = Path(gt=0), db: Session = Depends(get_db)):
-    fruit = db.query(Fruits).filter(fruit_id == Fruit.id).first()
+    fruit = db.query(Fruits).filter(Fruits.id == fruit_id).first()
     if fruit is not None:
         return fruit
     raise HTTPException(status_code=404, detail=f"Fruit with id #{fruit_id} was not found")
@@ -51,7 +51,7 @@ async def get_fruit_by_id(fruit_id: int = Path(gt=0), db: Session = Depends(get_
 
 @router.put("/{fruit_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_fruit_by_id(fruit_data: Fruit, fruit_id: int = Path(gt=0), db: Session = Depends(get_db)):
-    fruit = db.query(Fruits).filter(fruit_id == Fruit.id).first()
+    fruit = db.query(Fruits).filter(Fruits.id == fruit_id).first()
 
     if not fruit is None:
         raise HTTPException(status_code=404, detail=f"Fruit with id #{fruit_id} was not found")
