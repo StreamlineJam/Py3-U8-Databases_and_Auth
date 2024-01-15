@@ -53,11 +53,10 @@ async def get_fruit_by_id(fruit_id: int = Path(gt=0), db: Session = Depends(get_
 async def update_fruit_by_id(fruit_data: Fruit, fruit_id: int = Path(gt=0), db: Session = Depends(get_db)):
     fruit = db.query(Fruits).filter(Fruits.id == fruit_id).first()
 
-    if not fruit is None:
+    if fruit is None:
         raise HTTPException(status_code=404, detail=f"Fruit with id #{fruit_id} was not found")
 
     fruit.fruit_type = fruit_data.fruit_type
-    fruit.planter = fruit_data.planter
     fruit.color = fruit_data.color
     fruit.size = fruit_data.size
     fruit.grown = fruit_data.grown

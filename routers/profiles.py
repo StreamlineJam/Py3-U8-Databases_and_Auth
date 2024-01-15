@@ -28,8 +28,8 @@ class Profile(BaseModel):
 
 
 @router.get("", status_code=status.HTTP_200_OK)
-async def get_all_profiles(db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    return db.query(Profiles).filter(Profiles.name == current_user.get("id")).all()
+async def get_all_profiles(db: Session = Depends(get_db)):
+    return db.query(Profiles).all()
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
@@ -41,8 +41,8 @@ async def create_profile(profile: Profile, db: Session = Depends(get_db), curren
 
 
 @router.get("/{profile_id}", status_code=status.HTTP_200_OK)
-async def get_profile_by_id(profile_id: int = Path(gt=0), db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
-    profile = db.query(Profiles).filter(Profiles.id == profile_id).filter(Profiles.name == current_user.get("id")).first()
+async def get_profile_by_id(profile_id: int = Path(gt=0), db: Session = Depends(get_db)):
+    profile = db.query(Profiles).filter(Profiles.id == profile_id).first()
     if profile is not None:
         return profile
     raise HTTPException(status_code=404, detail=f"Profile with id #{profile_id} was not found")
